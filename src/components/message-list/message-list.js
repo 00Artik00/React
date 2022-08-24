@@ -65,15 +65,7 @@ export const MessageList = () => {
           <Message message={message} key={index} />
         ))}
       </div>
-      <Input
-        fullWidth
-        placeholder="Проверить добавление чата..."
-        endAdornment={
-          <InputAdornment position="end">
-            <SendIcon onClick={addChat} />
-          </InputAdornment>
-        }
-      />
+
       <Input
         autoFocus
         fullWidth
