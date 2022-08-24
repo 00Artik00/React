@@ -1,21 +1,25 @@
 import React, { useState, useEffect, useRef } from "react";
 // import PropTypes from "prop-types";
+import { useParams } from "react-router-dom";
 import { InputAdornment } from "@mui/material";
 import { Message } from "./message";
 import { Input, SendIcon } from "./styles";
 
+// @TODO  переделать как в https://codesandbox.io/s/gbchat-router-7fg2fn?file=/src/App.js:1887-1898
 export const MessageList = () => {
-  const [messageList, setMessageList] = useState([]);
+  const [messageList, setMessageList] = useState({ room1: [], room2: [], room3: [] });
   const [value, setValue] = useState("");
 
   const ref = useRef();
+  const { roomId } = useParams();
 
   const sendMessage = () => {
     if (value) {
-      setMessageList([
+      setMessageList({
         ...messageList,
-        { author: "User", message: value, date: new Date() },
-      ]);
+        [roomId]: [...messageList[roomId], { author: 'user', message: value }]
+      });
+
       setValue("");
     }
   };
@@ -37,32 +41,41 @@ export const MessageList = () => {
   }, [messageList]);
 
   useEffect(() => {
-    const lastMessage = messageList[messageList.length - 1];
+    const lastMessage = messageList[roomId][messageList[roomId].length - 1];
     let timerId = null;
 
-    if (messageList.length && lastMessage.author === "User") {
+    if (messageList[roomId].length && lastMessage.author === "user") {
       timerId = setTimeout(() => {
-        setMessageList([
+        setMessageList({
           ...messageList,
-          { author: "Bot", message: "Hello from Bot", date: new Date() },
-        ]);
+          [roomId]: [...messageList[roomId], { author: 'Bot', message: "Hello from Bot" }]
+        });
       }, 500);
 
       return () => {
         clearInterval(timerId);
       };
     }
-  }, [messageList]);
+  }, [messageList[roomId]]);
 
   return (
     <>
       <div ref={ref}>
-        {messageList.map((message, index) => (
+        {messageList[roomId].map((message, index) => (
           <Message message={message} key={index} />
         ))}
       </div>
-
       <Input
+        fullWidth
+        placeholder="Проверить добавление чата..."
+        endAdornment={
+          <InputAdornment position="end">
+            <SendIcon onClick={addChat} />
+          </InputAdornment>
+        }
+      />
+      <Input
+        autoFocus
         fullWidth
         placeholder="Введите сообщение..."
         value={value}
@@ -78,14 +91,4 @@ export const MessageList = () => {
   );
 };
 
-// MessageList.propTypes = {
-//   message: PropTypes.string.isRequired,
-//   o1: PropTypes.shape({
-//     s1: PropTypes.string.isRequired,
-//   }).isRequired,
-//   a: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       s1: PropTypes.string.isRequired,
-//     }).isRequired
-//   ).isRequired,
-// };
+
