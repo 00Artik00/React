@@ -4,9 +4,7 @@ import { memo } from "react";
 
 export const Chat = memo(({ title, selected }) => {
   return (
-    <ListItemButton
-      selected={selected}
-    >
+    <ListItemButton selected={selected}>
       <ListItemIcon>
         <AccountCircle />
       </ListItemIcon>

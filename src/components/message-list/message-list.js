@@ -1,32 +1,40 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 // import PropTypes from "prop-types";
-import { useParams } from "react-router-dom";
 import { InputAdornment } from "@mui/material";
 import { Message } from "./message";
 import { Input, SendIcon } from "./styles";
+import { useParams } from "react-router-dom";
 
 // @TODO  переделать как в https://codesandbox.io/s/gbchat-router-7fg2fn?file=/src/App.js:1887-1898
 export const MessageList = () => {
-  const [messageList, setMessageList] = useState({ room1: [], room2: [], room3: [] });
+  const [messageList, setMessageList] = useState({
+    room1: [{ author: "User", message: "test", date: new Date() }],
+  });
   const [value, setValue] = useState("");
 
-  const ref = useRef();
   const { roomId } = useParams();
 
-  const sendMessage = () => {
-    if (value) {
-      setMessageList({
-        ...messageList,
-        [roomId]: [...messageList[roomId], { author: 'user', message: value }]
-      });
+  const ref = useRef();
 
-      setValue("");
-    }
-  };
+  const sendMessage = useCallback(
+    (message, author = "User") => {
+      if (message) {
+        setMessageList((state) => ({
+          ...state,
+          [roomId]: [
+            ...(state[roomId] ?? []),
+            { author, message, date: new Date() },
+          ],
+        }));
+        setValue("");
+      }
+    },
+    [roomId]
+  );
 
   const handlePressInput = ({ code }) => {
     if (code === "Enter") {
-      sendMessage();
+      sendMessage(value);
     }
   };
 
@@ -41,27 +49,27 @@ export const MessageList = () => {
   }, [messageList]);
 
   useEffect(() => {
-    const lastMessage = messageList[roomId][messageList[roomId].length - 1];
+    const messages = messageList[roomId] ?? [];
+    const lastMessage = messages[messages.length - 1];
     let timerId = null;
 
-    if (messageList[roomId].length && lastMessage.author === "user") {
+    if (messages.length && lastMessage.author === "User") {
       timerId = setTimeout(() => {
-        setMessageList({
-          ...messageList,
-          [roomId]: [...messageList[roomId], { author: 'Bot', message: "Hello from Bot" }]
-        });
+        sendMessage("hello from bot", "Bot");
       }, 500);
 
       return () => {
         clearInterval(timerId);
       };
     }
-  }, [messageList[roomId]]);
+  }, [messageList, roomId, sendMessage]);
+
+  const messages = messageList[roomId] ?? [];
 
   return (
     <>
       <div ref={ref}>
-        {messageList[roomId].map((message, index) => (
+        {messages.map((message, index) => (
           <Message message={message} key={index} />
         ))}
       </div>
@@ -83,4 +91,14 @@ export const MessageList = () => {
   );
 };
 
-
+// MessageList.propTypes = {
+//   message: PropTypes.string.isRequired,
+//   o1: PropTypes.shape({
+//     s1: PropTypes.string.isRequired,
+//   }).isRequired,
+//   a: PropTypes.arrayOf(
+//     PropTypes.shape({
+//       s1: PropTypes.string.isRequired,
+//     }).isRequired
+//   ).isRequired,
+// };
