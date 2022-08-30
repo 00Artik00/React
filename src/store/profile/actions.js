@@ -1,9 +1,9 @@
-import { UNLOCKPROFILE, LOCKPROFILE } from "./types";
+import { TOGGLE_VISIBLE_PROFILE, UPDATE_PROFILE } from "./types";
 
-export const unlockProfile = () => {
-  return { type: UNLOCKPROFILE };
+export const toggleVisibleProfile = () => {
+  return { type: TOGGLE_VISIBLE_PROFILE };
 };
 
-export const lockProfile = () => {
-  return { type: LOCKPROFILE };
+export const updateProfile = (profile) => {
+  return { type: UPDATE_PROFILE, payload: profile };
 };

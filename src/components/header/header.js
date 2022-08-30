@@ -1,13 +1,24 @@
 import { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from "../../theme-context";
-import { useSelector, useDispatch } from "react-redux";
-import { unlockProfile, lockProfile } from "../../store/profile";
+
+const menu = [
+  {
+    title: "Home",
+    to: "/",
+  },
+  {
+    title: "Chat",
+    to: "/chat",
+  },
+  {
+    title: "Profile",
+    to: "/profile",
+  },
+];
 
 export const Header = () => {
   const { theme, themeSetter } = useContext(ThemeContext);
-  const dispatch = useDispatch();
-  const menu = useSelector((state) => state.profile.menu)
 
   return (
     <div>
@@ -25,18 +36,11 @@ export const Header = () => {
         dark
       </button>
 
-      {menu.map((item) => {
-        if (item.show === true) return (
-          < NavLink key={item.to} to={item.to} >
-            {item.title}
-          </NavLink>
-        )
-      }
-
-      )}
-
-      <button disabled={menu[menu.indexOf(menu.find(el => el.title === 'Profile'))].show === true} onClick={() => dispatch(unlockProfile())}>UnlockProfile</button>
-      <button disabled={menu[menu.indexOf(menu.find(el => el.title === 'Profile'))].show === false} onClick={() => dispatch(lockProfile())}>LockProfile</button>
+      {menu.map((item) => (
+        <NavLink key={item.to} to={item.to}>
+          {item.title}
+        </NavLink>
+      ))}
     </div>
   );
 };
