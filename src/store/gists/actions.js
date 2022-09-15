@@ -1,5 +1,11 @@
-import { GET_GISTS_START, GET_GISTS_SUCCESS, GET_GISTS_ERROR } from "./types";
-import { GET_GISTSBYSEARCH_START, GET_GISTSBYSEARCH_SUCCESS, GET_GISTSBYSEARCH_ERROR } from "./types";
+import {
+  GET_GISTS_START,
+  GET_GISTS_SUCCESS,
+  GET_GISTS_ERROR,
+  SEARCH_GISTS_ERROR,
+  SEARCH_GISTS_START,
+  SEARCH_GISTS_SUCCESS,
+} from "./types";
 
 export const getGistsStart = () => ({ type: GET_GISTS_START });
 export const getGistsSuccess = (gists) => ({
@@ -11,13 +17,12 @@ export const getGistsError = (error) => ({
   payload: error,
 });
 
-
-export const getGistsBySearchStart = () => ({ type: GET_GISTSBYSEARCH_START });
-export const getGistsBySearchSuccess = (gists) => ({
-  type: GET_GISTSBYSEARCH_SUCCESS,
+export const searchGistsStart = () => ({ type: SEARCH_GISTS_START });
+export const searchGistsSuccess = (gists) => ({
+  type: SEARCH_GISTS_SUCCESS,
   payload: gists,
 });
-export const getGistsBySearchError = (error) => ({
-  type: GET_GISTSBYSEARCH_ERROR,
+export const searchGistsError = (error) => ({
+  type: SEARCH_GISTS_ERROR,
   payload: error,
 });
